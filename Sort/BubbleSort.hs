@@ -1,7 +1,7 @@
-module Sort.Bubblesort where
+module Sort.BubbleSort where
 
-bubblesort :: (a -> a -> Bool) -> [a] -> [a]
-bubblesort compare list = go (length list) list
+bubbleSort :: (a -> a -> Bool) -> [a] -> [a]
+bubbleSort compare list = go (length list) list
   where
     go 0 list = list
     go endIndex list =

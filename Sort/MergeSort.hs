@@ -1,10 +1,10 @@
-module Sort.Mergesort where
+module Sort.MergeSort where
 
-mergesort :: (a -> a -> Bool) -> [a] -> [a]
-mergesort _ [] = []
-mergesort _ [x] = [x]
-mergesort compare list =
-  merge compare (mergesort compare first) (mergesort compare second)
+mergeSort :: (a -> a -> Bool) -> [a] -> [a]
+mergeSort _ [] = []
+mergeSort _ [x] = [x]
+mergeSort compare list =
+  merge compare (mergeSort compare first) (mergeSort compare second)
   where
     half = length list `div` 2
     first = take half list
