@@ -1,18 +1,28 @@
-module MillerRabin (millerRabinWitness, millerRabinPrimalityTest) where
+module MillerRabin
+  ( millerRabinDecompose,
+    millerRabinWitnessGivenDecomposition,
+    millerRabinWitness,
+    millerRabinPrimalityTest,
+  )
+where
 
-import Data.Bits (Bits (shiftR), FiniteBits (countTrailingZeros))
 import RaiseToPowerModulo (raiseToSomePowerModulo)
 import System.Random (randomRIO)
 
-millerRabinWitness :: Int -> Int -> Bool
-millerRabinWitness value base
+millerRabinDecompose :: Integer -> (Integer, Integer)
+millerRabinDecompose value
+  | even value = (leadingZeros + 1, excess)
+  | otherwise = (0, value)
+  where
+    (leadingZeros, excess) = millerRabinDecompose (value `div` 2)
+
+millerRabinWitnessGivenDecomposition :: Integer -> (Integer, Integer) -> Integer -> Bool
+millerRabinWitnessGivenDecomposition value (s, d) base
   | value < 2 = False
   | value == 2 = True
   | even value = False
-  | otherwise = checkWitness x s
+  | otherwise = checkWitness (raiseToSomePowerModulo base d value) s
   where
-    s = countTrailingZeros (value - 1)
-    d = (value - 1) `shiftR` s
     x = raiseToSomePowerModulo base d value
 
     checkWitness x 0 = x == 1
@@ -22,28 +32,39 @@ millerRabinWitness value base
       where
         y = (x * x) `mod` value
 
+millerRabinWitness :: Integer -> Integer -> Bool
+millerRabinWitness value =
+  millerRabinWitnessGivenDecomposition
+    value
+    (millerRabinDecompose (value - 1))
+
 -- http://miller-rabin.appspot.com/
-millerRabinBases :: [Int]
+millerRabinBases :: [Integer]
 millerRabinBases = [2, 325, 9375, 28178, 450775, 9780504, 1795265022]
 
 -- Can be calulcated through this, but it is slow due to the factorisation.
--- millerRabinFailures = map head (group (sort (concatMap primeDivisors [2, 325, 9375, 28178, 450775, 9780504, 1795265022])))
-millerRabinFailures :: [Int]
-millerRabinFailures = [2, 3, 5, 13, 19, 73, 193, 407521, 299210837]
+-- millerRabinExceptions = map head (group (sort (concatMap primeDivisors [2, 325, 9375, 28178, 450775, 9780504, 1795265022])))
+millerRabinExceptions :: [Integer]
+millerRabinExceptions = [2, 3, 5, 13, 19, 73, 193, 407521, 299210837]
 
-deterministicMillerRabinPrimalityTest :: Int -> Bool
+deterministicMillerRabinPrimalityTest :: Integer -> Bool
 deterministicMillerRabinPrimalityTest value
-  | value `elem` millerRabinFailures = True
-  | otherwise = all (millerRabinWitness value) millerRabinBases
+  | value > 2 ^ 64 = error "input exceeds 2^64, cannot confirm reliablity of 'deterministic' Miller-Rabin test"
+  | value `elem` millerRabinExceptions = True
+  | otherwise = all (millerRabinWitnessGivenDecomposition value decomposition) millerRabinBases
+  where
+    decomposition = millerRabinDecompose (value - 1)
 
-millerRabinPrimalityTest :: Int -> Int -> IO Bool
+millerRabinPrimalityTest :: Integer -> Integer -> IO Bool
 millerRabinPrimalityTest 0 _ = return True
 millerRabinPrimalityTest rounds value =
   do
     a <- randomRIO (2, value - 2)
-    if millerRabinWitness value a
+    if millerRabinWitnessGivenDecomposition value decomposition a
       then millerRabinPrimalityTest (rounds - 1) value
       else return False
+  where
+    decomposition = millerRabinDecompose (value - 1)
 
 main :: IO ()
 main = do
@@ -51,3 +72,6 @@ main = do
   print isPrime
   isPrime <- millerRabinPrimalityTest 64 97
   print isPrime
+
+  print (deterministicMillerRabinPrimalityTest 312)
+  print (deterministicMillerRabinPrimalityTest 97)
