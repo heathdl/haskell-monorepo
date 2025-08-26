@@ -1,7 +1,5 @@
 module RaiseToPowerModulo where
 
-import Prime (eulersTotient)
-
 raiseToSomePowerModulo :: Int -> Int -> Int -> Int
 raiseToSomePowerModulo _ 0 _ = 1
 raiseToSomePowerModulo base value n = go (base `mod` n) value
@@ -17,5 +15,5 @@ main = do
   print (raiseToSomePowerModulo a m n)
   where
     a = 71273612313
-    m = 91137987423 `mod` eulersTotient n
+    m = 223
     n = 1000
