@@ -1,6 +1,6 @@
 module RaiseToPowerModulo where
 
-raiseToSomePowerModulo :: Integer -> Integer -> Integer -> Integer
+raiseToSomePowerModulo :: (Integral a) => a -> a -> a -> a
 raiseToSomePowerModulo _ 0 _ = 1
 raiseToSomePowerModulo base value n = go (base `mod` n) value
   where
