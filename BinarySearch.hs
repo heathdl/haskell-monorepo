@@ -1,6 +1,6 @@
 module BinarySearch where
 
-import           BisectionSearch
+import BisectionSearch (bisectionSearch)
 
 binarySearch :: [Int] -> Int -> Maybe Int
 binarySearch [] _ = Nothing
