@@ -1,9 +1,9 @@
 module Prime (primes, isPrime, isPrimeTrialDivision, primeFactorisation, primeFactorMultiset, primeDivisors, eulersTotient) where
 
-import MillarRabin (millerRabinPrimalityTest)
+import MillerRabin (deterministicMillerRabinPrimalityTest)
 
 primes :: [Int]
-primes = 2 : 3 : filter millerRabinPrimalityTest [5, 7 ..]
+primes = 2 : 3 : filter deterministicMillerRabinPrimalityTest [5, 7 ..]
 
 isPrime :: Int -> Bool
 isPrime 1 = False
