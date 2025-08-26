@@ -1,7 +1,9 @@
 module Prime (primes, isPrime, isPrimeTrialDivision, primeFactorisation, primeFactorMultiset, primeDivisors, eulersTotient) where
 
+import MillarRabin (millerRabinPrimalityTest)
+
 primes :: [Int]
-primes = 2 : 3 : filter isPrime [5, 7 ..]
+primes = 2 : 3 : filter millerRabinPrimalityTest [5, 7 ..]
 
 isPrime :: Int -> Bool
 isPrime 1 = False
@@ -59,7 +61,6 @@ eulersTotient value
 
 main :: IO ()
 main = do
-  -- print (take 100 primes)
   print (primeDivisors value)
   print (primeFactorisation value)
   print (primeFactorMultiset value)
