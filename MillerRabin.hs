@@ -73,15 +73,17 @@ millerRabinPrimalityTest value rounds generator
         (base, generator') = randomR (2, value - 2) generator
     decomposition = millerRabinDecompose value
 
-millarRabinPrimeGenerator :: (Integral a, Random a, RandomGen g) => Int -> g -> [a]
-millarRabinPrimeGenerator rounds = go 3 2
+millarRabinPrimeGenerator :: (Integral a, Random a, RandomGen g) => Int -> a -> g -> [a]
+millarRabinPrimeGenerator rounds initialCandidate
+  | even initialCandidate = go (initialCandidate + 1)
+  | otherwise = go initialCandidate
   where
-    go candidate interval generator
+    go candidate generator
       | isPrime = candidate : subsequent
       | otherwise = subsequent
       where
         (isPrime, generator') = millerRabinPrimalityTest candidate rounds generator
-        subsequent = go (candidate + interval) (6 - interval) generator'
+        subsequent = go (candidate + 2) generator'
 
 main :: IO ()
 main = do
