@@ -7,11 +7,10 @@ raiseToSomePowerModulo _ 0 _ = 1
 raiseToSomePowerModulo base value n = go (base `mod` n) value
   where
     go base value
-      | remainder == 1 = (base * subsequent) `mod` n
+      | odd value = (base * subsequent) `mod` n
       | otherwise = subsequent
       where
-        (quotient, remainder) = value `quotRem` 2
-        subsequent = raiseToSomePowerModulo (base * base `mod` n) quotient n
+        subsequent = raiseToSomePowerModulo (base * base `mod` n) (value `div` 2) n
 
 main :: IO ()
 main = do
