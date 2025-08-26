@@ -3,11 +3,12 @@ module MillerRabin
     millerRabinWitnessGivenDecomposition,
     millerRabinWitness,
     millerRabinPrimalityTest,
+    millarRabinPrimeGenerator,
   )
 where
 
 import RaiseToPowerModulo (raiseToSomePowerModulo)
-import System.Random (randomRIO)
+import System.Random (Random (randomR), RandomGen)
 
 millerRabinDecompose :: (Integral a) => a -> (Int, a)
 millerRabinDecompose value = go (value - 1) 0
@@ -55,26 +56,34 @@ deterministicMillerRabinPrimalityTest value
   where
     decomposition = millerRabinDecompose value
 
-millerRabinPrimalityTest :: (Integral a) => a -> a -> IO Bool
-millerRabinPrimalityTest 0 _ = return True
-millerRabinPrimalityTest rounds value =
-  do
-    a <- fmap fromInteger (randomRIO (2, toInteger value - 2))
-    if millerRabinWitnessGivenDecomposition value decomposition a
-      then millerRabinPrimalityTest (rounds - 1) value
-      else return False
+millerRabinPrimalityTest :: (Integral a, Random a, RandomGen g) => a -> Int -> g -> (Bool, g)
+millerRabinPrimalityTest _ 0 generator = (True, generator)
+millerRabinPrimalityTest value rounds generator
+  | value < 2 = (False, generator)
+  | value == 2 = (True, generator)
+  | even value = (False, generator)
+  | otherwise = go rounds generator
   where
+    go 0 generator = (True, generator)
+    go rounds generator
+      | isPossiblyPrime = go (rounds - 1) generator'
+      | otherwise = (False, generator')
+      where
+        isPossiblyPrime = millerRabinWitnessGivenDecomposition value decomposition base
+        (base, generator') = randomR (2, value - 2) generator
     decomposition = millerRabinDecompose value
+
+millarRabinPrimeGenerator :: (Integral a, Random a, RandomGen g) => Int -> g -> [a]
+millarRabinPrimeGenerator rounds = go 3 2
+  where
+    go candidate interval generator
+      | isPrime = candidate : subsequent
+      | otherwise = subsequent
+      where
+        (isPrime, generator') = millerRabinPrimalityTest candidate rounds generator
+        subsequent = go (candidate + interval) (6 - interval) generator'
 
 main :: IO ()
 main = do
-  isPrime <- millerRabinPrimalityTest 64 312
-  print isPrime
-  isPrime <- millerRabinPrimalityTest 64 97
-  print isPrime
-
-  print (deterministicMillerRabinPrimalityTest 312)
   print (deterministicMillerRabinPrimalityTest 97)
-
-  isPrime <- millerRabinPrimalityTest 128 (36683066477630951724340087046591610564446921147353414096088600256138856905183639589419929766697136525547236850070079729469226627 :: Integer)
-  print isPrime
+  print (deterministicMillerRabinPrimalityTest 312)
