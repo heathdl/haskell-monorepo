@@ -1,4 +1,4 @@
-module Prime (primes, isPrime, isPrimeTrialDivision, primeDivisors, primeFactorisation) where
+module Prime (primes, isPrime, isPrimeTrialDivision, primeFactorisation, primeFactorMultiset, primeDivisors, eulersTotient) where
 
 primes :: [Int]
 primes = 2 : 3 : filter isPrime [5, 7 ..]
@@ -26,35 +26,43 @@ isPrimeTrialDivision value =
       | value `mod` check == 0 = False
       | otherwise = go (check + increment) (6 - increment)
 
-primeDivisors :: Int -> [Int]
-primeDivisors value
-  | value < 2 = []
-  | otherwise = factor value primes
-  where
-    factor 1 _ = []
-    factor value (divisor : divisors)
-      | divisor * divisor > value = [value]
-      | value `mod` divisor == 0 = divisor : factor (divide value divisor) (divisor : divisors)
-      | otherwise = factor value divisors
-    divide value divisor
-      | value `mod` divisor == 0 = divide (value `div` divisor) divisor
-      | otherwise = value
-
-primeFactorisation :: Int -> [Int]
+primeFactorisation :: Int -> [(Int, Int)]
 primeFactorisation value
   | value < 2 = []
-  | otherwise = factor value primes
+  | value < 3 = [(value, 1)]
+  | otherwise = go value primes
   where
-    factor 1 _ = []
-    factor value (divisor : divisors)
-      | divisor * divisor > value = [value]
-      | value `mod` divisor == 0 = divisor : factor (value `div` divisor) (divisor : divisors)
-      | otherwise = factor value divisors
+    go :: Int -> [Int] -> [(Int, Int)]
+    go 1 _ = []
+    go value (divisor : divisors)
+      | divisor * divisor > value = [(value, 1)]
+      | value `mod` divisor == 0 = (divisor, termCount) : go remainder divisors
+      | otherwise = go value divisors
+      where
+        (termCount, remainder) = divide divisor value 0
+    divide divisor value count
+      | remainder == 0 = divide divisor quotient (count + 1)
+      | otherwise = (count, value)
+      where
+        (quotient, remainder) = value `quotRem` divisor
+
+primeFactorMultiset :: Int -> [Int]
+primeFactorMultiset value = concatMap (uncurry (flip replicate)) (primeFactorisation value)
+
+primeDivisors :: Int -> [Int]
+primeDivisors value = map fst (primeFactorisation value)
+
+eulersTotient :: Int -> Int
+eulersTotient value
+  | value < 1 = 0
+  | otherwise = product [(factor - 1) * factor ^ (count - 1) | (factor, count) <- primeFactorisation value]
 
 main :: IO ()
 main = do
-  print (take 100 primes)
+  -- print (take 100 primes)
   print (primeDivisors value)
   print (primeFactorisation value)
+  print (primeFactorMultiset value)
+  print (eulersTotient value)
   where
-    value = 39342594728712960
+    value = 3 * 3 * 5 * 11

@@ -1,26 +1,6 @@
 module RaiseToPowerModulo where
 
-import Prime (primes)
-
-eulersTotient :: Int -> Int
-eulersTotient value
-  | value < 1 = 0
-  | value < 3 = 1
-  | otherwise = go value primes
-  where
-    go :: Int -> [Int] -> Int
-    go 1 _ = 1
-    go value (divisor : divisors)
-      | divisor * divisor > value = value - 1
-      | value `mod` divisor == 0 = (divisor - 1) * (divisor ^ (termCount - 1)) * go remainder divisors
-      | otherwise = go value divisors
-      where
-        (termCount, remainder) = divide divisor value 0
-    divide divisor value count
-      | remainder == 0 = divide divisor quotient (count + 1)
-      | otherwise = (count, value)
-      where
-        (quotient, remainder) = value `quotRem` divisor
+import Prime (eulersTotient)
 
 raiseToSomePowerModulo :: Int -> Int -> Int -> Int
 raiseToSomePowerModulo _ 0 _ = 1
