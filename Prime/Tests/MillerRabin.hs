@@ -1,7 +1,8 @@
-module MillerRabin
+module Prime.Tests.MillerRabin
   ( millerRabinDecompose,
     millerRabinWitnessGivenDecomposition,
     millerRabinWitness,
+    deterministicMillerRabinPrimalityTest,
     millerRabinPrimalityTest,
     millarRabinPrimeGenerator,
   )
