@@ -23,43 +23,41 @@ extractFloatComponents x
     (adjustedMantissa, offset) = normalise mantissa
     adjustedExponent = -exponent - offset
 
-csθ :: (RealFloat a) => [(a, a)]
-csθ = iterate next (0, 1)
+scθ :: (RealFloat a) => [(a, a)]
+scθ = iterate next (1, 0)
   where
-    next (cos, _) = (cos', sin')
+    next (_, cos) = (sin', cos')
       where
         cos' = sqrt ((1 + cos) / 2)
         sin' = sqrt (1 - cos' ^ 2)
 
 sinCos :: (RealFloat a) => a -> (a, a)
 sinCos value
-  | even integral = (cosValue, sinValue)
-  | otherwise = (-cosValue, -sinValue)
+  | even integral = (sinValue, cosValue)
+  | otherwise = (-sinValue, -cosValue)
   where
     (integral, fractional, bitLength) = extractFloatComponents value
-    (cosValue, sinValue) = go fractional bitLength csθ
+    (sinValue, cosValue) = go fractional bitLength scθ
 
     go :: (RealFloat a) => Integer -> Int -> [(a, a)] -> (a, a)
-    go 0 _ _ = (1.0, 0.0)
-    go _ 0 _ = (1.0, 0.0)
-    go fractional bitLength ((cθ, sθ) : csθs)
-      | testBit fractional (bitLength - 1) = (cosΣ', sinΣ')
-      | otherwise = (cosΣ, sinΣ)
+    go 0 _ _ = (0.0, 1.0)
+    go _ 0 _ = (0.0, 1.0)
+    go fractional bitLength ((sθ, cθ) : scθs)
+      | testBit fractional (bitLength - 1) = (sinΣ', cosΣ')
+      | otherwise = (sinΣ, cosΣ)
       where
-        cosΣ' = cosΣ * cθ - sinΣ * sθ
         sinΣ' = sinΣ * cθ + cosΣ * sθ
-        (cosΣ, sinΣ) = go fractional (bitLength - 1) csθs
-
-cos :: (RealFloat a) => a -> a
-cos value = fst (sinCos value)
+        cosΣ' = cosΣ * cθ - sinΣ * sθ
+        (sinΣ, cosΣ) = go fractional (bitLength - 1) scθs
 
 sin :: (RealFloat a) => a -> a
-sin value = snd (sinCos value)
+sin value = fst (sinCos value)
+
+cos :: (RealFloat a) => a -> a
+cos value = snd (sinCos value)
 
 tan :: (RealFloat a) => a -> a
-tan value = sinValue / cosValue
-  where
-    (cosValue, sinValue) = sinCos value
+tan value = uncurry (/) (sinCos value)
 
 main :: IO ()
 main = do
