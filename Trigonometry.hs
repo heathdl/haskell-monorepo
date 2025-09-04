@@ -26,10 +26,10 @@ extractFloatComponents x
 scθ :: (RealFloat a) => [(a, a)]
 scθ = iterate next (1, 0)
   where
-    next (_, cos) = (sin', cos')
+    next (sin, cos) = (sin', cos')
       where
+        sin' = sin / sqrt (2 * (1 + cos))
         cos' = sqrt ((1 + cos) / 2)
-        sin' = sqrt (1 - cos' ^ 2)
 
 sinCos :: (RealFloat a) => a -> (a, a)
 sinCos value
@@ -61,10 +61,11 @@ tan value = uncurry (/) (sinCos value)
 
 main :: IO ()
 main = do
-  print (Trigonometry.sin value)
-  print (Trigonometry.cos value)
-  print (Trigonometry.tan value)
-  where
-    value = 1 / 3 :: Double
-    range = 256
-    resolution = 32
+  let values = [1/4, 1/3, 3603 / 2048]
+  mapM_ (\x -> do
+    print x
+    putStrLn ("sin " ++ show (Trigonometry.sin x))
+    putStrLn ("cos " ++ show (Trigonometry.cos x))
+    putStrLn ("tan " ++ show (Trigonometry.tan x))
+    putStr "\n"
+    ) values
