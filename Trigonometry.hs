@@ -3,25 +3,6 @@ module Trigonometry (sinCos, Trigonometry.sin, Trigonometry.cos, Trigonometry.ta
 import Data.Bits (testBit)
 import Data.Fixed (mod')
 
-normalise :: (Integral a) => a -> (a, Int)
-normalise 0 = (0, 0)
-normalise value = go value 0
-  where
-    go value depth
-      | even value = go (value `div` 2) (depth + 1)
-      | otherwise = (value, depth)
-
-extractFloatComponents :: (RealFloat a) => a -> (Int, Integer, Int)
-extractFloatComponents x
-  | x == 0 = (0, 0, 0)
-  | otherwise = (integral, adjustedMantissa, adjustedExponent)
-  where
-    integral = floor x
-    fractional = abs (x `mod'` 1)
-
-    (mantissa, exponent) = decodeFloat fractional
-    (adjustedMantissa, offset) = normalise mantissa
-    adjustedExponent = -exponent - offset
 
 scθ :: (RealFloat a) => [(a, a)]
 scθ = iterate next (1, 0)
@@ -49,6 +30,24 @@ sinCos value
         sinΣ' = sinΣ * cθ + cosΣ * sθ
         cosΣ' = cosΣ * cθ - sinΣ * sθ
         (sinΣ, cosΣ) = go fractional (bitLength - 1) scθs
+
+    extractFloatComponents x
+      | x == 0 = (0, 0, 0)
+      | otherwise = (integral, adjustedMantissa, adjustedExponent)
+      where
+        integral = floor x
+        fractional = abs (x `mod'` 1)
+        
+        (mantissa, exponent) = decodeFloat fractional
+        (adjustedMantissa, offset) = normalise mantissa
+        adjustedExponent = -exponent - offset
+
+        normalise 0 = (0, 0)
+        normalise value = go value 0
+          where
+            go value depth
+              | even value = go (value `div` 2) (depth + 1)
+              | otherwise = (value, depth)
 
 sin :: (RealFloat a) => a -> a
 sin value = fst (sinCos value)
