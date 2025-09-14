@@ -3,7 +3,6 @@ module Trigonometry (sinCos, Trigonometry.sin, Trigonometry.cos, Trigonometry.ta
 import Data.Bits (testBit)
 import Data.Fixed (mod')
 
-
 scθ :: (RealFloat a) => [(a, a)]
 scθ = iterate next (1, 0)
   where
@@ -37,7 +36,7 @@ sinCos value
       where
         integral = floor x
         fractional = abs (x `mod'` 1)
-        
+
         (mantissa, exponent) = decodeFloat fractional
         (adjustedMantissa, offset) = normalise mantissa
         adjustedExponent = -exponent - offset
@@ -60,11 +59,13 @@ tan value = uncurry (/) (sinCos value)
 
 main :: IO ()
 main = do
-  let values = [1/4, 1/3, 3603 / 2048]
-  mapM_ (\x -> do
-    print x
-    putStrLn ("sin " ++ show (Trigonometry.sin x))
-    putStrLn ("cos " ++ show (Trigonometry.cos x))
-    putStrLn ("tan " ++ show (Trigonometry.tan x))
-    putStr "\n"
-    ) values
+  let values = [1 / 4, 1 / 3, 312 / 1024, 3603 / 2048]
+  mapM_
+    ( \x -> do
+        print x
+        putStrLn ("sin " ++ show (Trigonometry.sin x))
+        putStrLn ("cos " ++ show (Trigonometry.cos x))
+        putStrLn ("tan " ++ show (Trigonometry.tan x))
+        putStr "\n"
+    )
+    values
