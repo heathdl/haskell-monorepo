@@ -1,4 +1,4 @@
-module Factors (primeFactorisationSubsets, countFactors, factorisationOfFactors, calculateFactors, highlyCompositeNumbers) where
+module Factors (primeFactorisationSubsets, countFactors, factorisationOfFactors, calculateFactors) where
 
 import Prime.Factorisation (primeFactorisation)
 import Prime.Factorisation.Pairwise (primeFactorPairs)
@@ -22,18 +22,8 @@ factorisationOfFactors x = primeFactorisationSubsets (primeFactorisation x)
 calculateFactors :: (Integral a) => a -> [a]
 calculateFactors x = map product (factorisationOfFactors x)
 
-highlyCompositeNumbers :: (Integral a) => [a]
-highlyCompositeNumbers = nextHighlyComposite primeFactorPairs 0
-  where
-    nextHighlyComposite ((x, factors) : xs) currentHighest
-      | factorCount > currentHighest = x : nextHighlyComposite xs factorCount
-      | otherwise = nextHighlyComposite xs currentHighest
-      where
-        factorCount = countFactors factors
-
 main :: IO ()
 main = do
   print (calculateFactors 360)
   print (factorisationOfFactors 360)
   print (countFactors (primeFactorisation 360))
-  print (take 25 highlyCompositeNumbers)
