@@ -8,7 +8,7 @@ areFactorisationsCoprime [] _ = True
 areFactorisationsCoprime _ [] = True
 areFactorisationsCoprime a@((ah, _) : as) b@((bh, _) : bs)
   | ah < bh = areFactorisationsCoprime as b
-  | ah > bh = areFactorisationsCoprime b bs
+  | ah > bh = areFactorisationsCoprime a bs
   | otherwise = False
 
 areCoprime :: (Integral a) => a -> a -> Bool
@@ -30,4 +30,4 @@ compositeCoprimes x = map fst (filter isCompositeCoprime candidates)
 
 main :: IO ()
 main = do
-  print (compositeCoprimes 35776)
+  print (calculateCoprimes 35776)
