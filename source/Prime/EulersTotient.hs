@@ -1,8 +1,9 @@
-module Prime.EulersTotient (eulersTotient) where
+module Prime.EulersTotient (eulersTotient, eulersTotientGivenFactorisation) where
 
 import Prime.Factorisation (primeFactorisation)
 
+eulersTotientGivenFactorisation :: (Integral a) => [(a, Int)] -> a
+eulersTotientGivenFactorisation factorisation = product (map (\(factor, count) -> (factor - 1) * factor ^ (count - 1)) factorisation)
+
 eulersTotient :: (Integral a) => a -> a
-eulersTotient value
-  | value < 1 = 0
-  | otherwise = product [(factor - 1) * factor ^ (count - 1) | (factor, count) <- primeFactorisation value]
+eulersTotient = eulersTotientGivenFactorisation . primeFactorisation 
