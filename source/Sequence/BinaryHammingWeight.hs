@@ -4,8 +4,8 @@ import BinaryDisplay (showAutoJustifiedBinaryList, showBinaryList, showJustified
 import BinaryDisplay.DisplayTypes (redColour)
 import Data.Bits (Bits (shiftR, xor, (.&.), (.|.)))
 
-iterativeHakmem175O :: Int -> [Word]
-iterativeHakmem175O n = iterate next (2 ^ n - 1)
+iterativeHakmem1750 :: Int -> [Word]
+iterativeHakmem1750 n = iterate next (2 ^ n - 1)
   where
     next x = r .|. o'
       where
