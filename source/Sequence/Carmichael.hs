@@ -1,7 +1,7 @@
 module Sequence.Carmichael (isCarmichael, isOddCompositeCarmichael, carmichaelNumbers) where
 
 import Composites (oddComposites)
-import Prime (isPrime, primes)
+import Prime (isPrime)
 import Prime.Coprimes (calculateCoprimes)
 import RaiseToPowerModulo (raiseToSomePowerModulo)
 
@@ -22,4 +22,4 @@ carmichaelNumbers = filter isOddCompositeCarmichael oddComposites
 
 main :: IO ()
 main = do
-  print (take 8 carmichaelNumbers)
+  print carmichaelNumbers
