@@ -6,4 +6,4 @@ eulersTotientGivenFactorisation :: (Integral a) => [(a, Int)] -> a
 eulersTotientGivenFactorisation factorisation = product (map (\(factor, count) -> (factor - 1) * factor ^ (count - 1)) factorisation)
 
 eulersTotient :: (Integral a) => a -> a
-eulersTotient = eulersTotientGivenFactorisation . primeFactorisation 
+eulersTotient = eulersTotientGivenFactorisation . primeFactorisation

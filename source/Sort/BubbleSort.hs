@@ -16,8 +16,8 @@ bubbleSort compare list = go (length list) list
     iteration compare endIndex (x : y : xs)
       | swap = (x : tail, swap')
       | otherwise = (y : tail, True)
-        where
-          swap = compare x y
-          (tail, swap')
-           | swap = iteration compare (endIndex - 1) (y : xs)
-           | otherwise = iteration compare (endIndex - 1) (x : xs)
+      where
+        swap = compare x y
+        (tail, swap')
+          | swap = iteration compare (endIndex - 1) (y : xs)
+          | otherwise = iteration compare (endIndex - 1) (x : xs)
