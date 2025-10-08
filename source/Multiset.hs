@@ -1,4 +1,4 @@
-module Multiset (Multiset, fromSortedList, subsetsOfSize, cardinalityOfMultiset, canonicalisePartitions, computePartitions, multiSetDoubleMap, formatMultiSet) where
+module Multiset (Multiset, fromSortedList, subsetsOfSize, cardinalityOfMultiset, canonicalisePartitions, computePartitions, computeCanonicalPartitions, multiSetDoubleMap, formatMultiSet) where
 
 import Data.List (intercalate, sort)
 import Data.Set qualified as Set
@@ -35,6 +35,26 @@ cardinalityOfMultiset = foldr ((+) . snd) 0
 
 canonicalisePartitions :: (Ord a) => [[Multiset a]] -> [[Multiset a]]
 canonicalisePartitions = Set.toList . Set.fromList . map sort
+
+computeCanonicalPartitions :: (Ord a) => Multiset a -> [[Multiset a]]
+computeCanonicalPartitions xs = concatMap (go Nothing xs) partitionSizes
+  where
+    PartitionForest partitionSizes = integerPartitionTree (cardinalityOfMultiset xs)
+
+    go :: (Ord a) => Maybe (Int, [(a, Int)]) -> Multiset a -> PartitionTree Int -> [[Multiset a]]
+    go m' ms (PartitionNode p children) =
+      concatMap choose (filter (isCanonicalSubset m' . fst) (subsetsOfSize p ms))
+      where
+        choose (subset, leftover)
+          | null children = [[subset] | null leftover]
+          | otherwise =
+              concatMap
+                (map (subset :) . go (Just (p, subset)) leftover)
+                children
+        isCanonicalSubset Nothing _ = True
+        isCanonicalSubset (Just (p', k')) set
+          | p' == p = k' <= set
+          | otherwise = True
 
 computePartitions :: Multiset a -> [[Multiset a]]
 computePartitions xs = concatMap (go xs) partitionSizes

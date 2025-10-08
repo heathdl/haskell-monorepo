@@ -1,6 +1,6 @@
 module Factors (primeFactorisationSubsets, countFactors, factorisationOfFactors, calculateFactors, nonPrimeFactorisationsFromFactorisation, nonPrimeFactorisations) where
 
-import Multiset (Multiset, canonicalisePartitions, computePartitions, fromSortedList, multiSetDoubleMap)
+import Multiset (Multiset, computeCanonicalPartitions, fromSortedList, multiSetDoubleMap)
 import Prime.Factorisation (primeFactorisation)
 import Prime.Factorisation.Pairwise (primeFactorPairs)
 import Sort.MergeSort (mergeAll)
@@ -27,7 +27,7 @@ nonPrimeFactorisationsFromFactorisation :: (Integral a) => [(a, Int)] -> [Multis
 nonPrimeFactorisationsFromFactorisation factorisation = map Multiset.fromSortedList products
   where
     products = map (map (multiSetDoubleMap (^) product)) partitions
-    partitions = canonicalisePartitions (computePartitions factorisation)
+    partitions = computeCanonicalPartitions factorisation
 
 nonPrimeFactorisations :: (Integral a) => a -> [Multiset a]
 nonPrimeFactorisations x = nonPrimeFactorisationsFromFactorisation (primeFactorisation x)
