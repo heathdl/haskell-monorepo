@@ -5,6 +5,7 @@ module Prime.Tests.MillerRabin
     deterministicMillerRabinPrimalityTest,
     millerRabinPrimalityTest,
     millarRabinPrimeGenerator,
+    millerRabinNextPrimeHigherThan,
   )
 where
 
@@ -75,16 +76,30 @@ millerRabinPrimalityTest value rounds generator
     decomposition = millerRabinDecompose value
 
 millarRabinPrimeGenerator :: (Integral a, Random a, RandomGen g) => Int -> a -> g -> [a]
-millarRabinPrimeGenerator rounds initialCandidate
-  | even initialCandidate = go (initialCandidate + 1)
-  | otherwise = go initialCandidate
+millarRabinPrimeGenerator rounds candidate generator =
+  map fst (tail (iterate (uncurry (millerRabinNextPrimeHigherThan rounds)) (candidate, generator)))
+
+millerRabinNextPrimeHigherThan :: (Integral a, Random a, RandomGen g) => Int -> a -> g -> (a, g)
+millerRabinNextPrimeHigherThan rounds lowerBound generator
+  | lowerBound < 2 = (2, generator)
+  | lowerBound == 2 = (3, generator)
+  | lowerBound < 5 = (5, generator)
+  | otherwise = go initialCandidate initialIncrement generator
   where
-    go candidate generator
-      | isPrime = candidate : subsequent
-      | otherwise = subsequent
+    residual = lowerBound `mod` 6
+    (initialCandidate, initialIncrement) = case residual of
+      0 -> (lowerBound + 1, 2)
+      1 -> (lowerBound + 4, 2)
+      2 -> (lowerBound + 3, 2)
+      3 -> (lowerBound + 2, 2)
+      4 -> (lowerBound + 1, 2)
+      5 -> (lowerBound + 2, 4)
+
+    go candidate increment generator
+      | isPrime = (candidate, generator')
+      | otherwise = go (candidate + increment) (6 - increment) generator'
       where
         (isPrime, generator') = millerRabinPrimalityTest candidate rounds generator
-        subsequent = go (candidate + 2) generator'
 
 main :: IO ()
 main = do
