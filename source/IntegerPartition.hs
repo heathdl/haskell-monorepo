@@ -26,9 +26,9 @@ integerPartitionTree n
       | m == 0 = []
       | otherwise =
           [ PartitionNode p children
-            | p <- [low .. m],
-              let children = build (m - p) p,
-              not (null children) || m - p == 0
+          | p <- [low .. m],
+            let children = build (m - p) p,
+            not (null children) || m - p == 0
           ]
 
 main :: IO ()
