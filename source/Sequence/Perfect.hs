@@ -13,6 +13,7 @@ isPerfectNumberFromFactorisation x f = sumOfDivisors f == 2 * x
 isPerfectNumber :: (Integral a) => a -> Bool
 isPerfectNumber x = isPerfectNumberFromFactorisation x (primeFactorisation x)
 
+-- https://oeis.org/A000396
 perfectNumbers :: (Integral a) => [a]
 perfectNumbers = map (\n -> (n * (n + 1)) `div` 2) mersennePrimes
 

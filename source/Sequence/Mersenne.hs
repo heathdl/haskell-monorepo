@@ -12,6 +12,7 @@ lucasLehmer n m = go (n - 2) 4
 mersenneNumbers :: (Integral a) => [(a, a)]
 mersenneNumbers = iterate (\(x, e) -> (x + x + 1, e + 1)) (3, 2)
 
+-- https://oeis.org/A001348
 mersennePrimeCandidates :: (Integral a) => [(a, a)]
 mersennePrimeCandidates = go mersenneNumbers primes
   where
@@ -23,13 +24,14 @@ mersennePrimeCandidates = go mersenneNumbers primes
 mersennePrimePairs :: (Integral a) => [(a, a)]
 mersennePrimePairs = filter (uncurry (flip lucasLehmer)) mersennePrimeCandidates
 
+-- https://oeis.org/A000668
 mersennePrimes :: (Integral a) => [a]
 mersennePrimes = map fst mersennePrimePairs
 
+-- https://oeis.org/A000043
 mersenneExponents :: (Integral a) => [a]
 mersenneExponents = map snd mersennePrimePairs
 
 main :: IO ()
 main = do
-  print (take 15 mersenneNumbers)
   mapM_ print (mersennePrimes :: [Integer])

@@ -14,7 +14,9 @@ isHappy x = go x (IntSet.singleton x)
       where
         x' = sumDigitsSquared x
 
+-- https://oeis.org/A007770
 happyNumbers :: [Int]
+-- https://oeis.org/A031177
 unhappyNumbers :: [Int]
 (happyNumbers, unhappyNumbers) = go IntSet.empty IntSet.empty [1 ..]
   where
@@ -36,6 +38,7 @@ unhappyNumbers :: [Int]
           where
             n' = sumDigitsSquared n
 
+-- https://oeis.org/A103369
 happyNumberTerminals :: [Int]
 happyNumberTerminals = go IntMap.empty [1 ..]
   where

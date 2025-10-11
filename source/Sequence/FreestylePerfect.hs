@@ -12,6 +12,7 @@ isFreestylePerfectNumberFromFactorisation x y = any (isPerfectNumberFromFactoris
 isFreestylePerfectNumber :: (Integral a) => a -> Bool
 isFreestylePerfectNumber x = isFreestylePerfectNumberFromFactorisation x (primeFactorisation x)
 
+-- https://oeis.org/A058007
 freestylePerfectNumbers :: (Integral a) => [a]
 freestylePerfectNumbers = map fst (filter (uncurry isFreestylePerfectNumberFromFactorisation) primeFactorPairs)
 

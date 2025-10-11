@@ -17,6 +17,7 @@ isCarmichael n
   | isPrime n = False
   | otherwise = isOddCompositeCarmichael n
 
+-- https://oeis.org/A002997
 carmichaelNumbers :: (Integral a) => [a]
 carmichaelNumbers = filter isOddCompositeCarmichael oddComposites
 

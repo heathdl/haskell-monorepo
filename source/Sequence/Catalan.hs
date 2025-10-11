@@ -1,5 +1,6 @@
 module Sequence.Catalan (catalanNumbers) where
 
+-- https://oeis.org/A000108
 catalanNumbers :: (Integral a) => [a]
 catalanNumbers = scanl step 1 [1 ..]
   where

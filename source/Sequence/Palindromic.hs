@@ -5,9 +5,11 @@ import NumericalPalindromes (getPalindromicBasesOf)
 import Prime (primes)
 import ScriptedNumbers (toSubscript)
 
+-- https://oeis.org/A016038
 strictlyNonPalindromicNumbers :: (Integral a) => [a]
-strictlyNonPalindromicNumbers = 0 : 1 : 2 : 3 : 4 : 6 : filter (null . getPalindromicBasesOf) (drop 2 primes)
+strictlyNonPalindromicNumbers = 0 : 1 : 2 : 3 : 4 : 6 : filter (null . tail . getPalindromicBasesOf) (drop 2 primes)
 
+-- https://oeis.org/A107129
 highlyPalindromicNumbers :: (Integral a) => [a]
 highlyPalindromicNumbers = 3 : 5 : 10 : 21 : 36 : 60 : 80 : highlyPalindromicNumbers [120, 132 ..] 6
   where
