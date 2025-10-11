@@ -1,7 +1,8 @@
 module Prime (primes, isPrime) where
 
 import Data.Bool (Bool)
-import Prime.Tests.MillerRabin (deterministicMillerRabinPrimalityTest, millerRabinPrimalityTest)
+import Prime.Factorisation.Pairwise (primeFactorPairs)
+import Prime.Tests.MillerRabin (deterministicMillerRabinPrimalityTest)
 import Prime.Tests.TrailDivision (internalTrialDivision)
 import System.Random (Random, mkStdGen)
 
@@ -9,7 +10,7 @@ isPrimeTrialDivision :: (Integral a) => a -> Bool
 isPrimeTrialDivision = internalTrialDivision primes
 
 primes :: (Integral a) => [a]
-primes = 2 : 3 : filter isPrime [5, 7 ..]
+primes = [x | (x, [(_, 1)]) <- tail primeFactorPairs]
 
 isPrime :: (Integral a) => a -> Bool
 isPrime value
