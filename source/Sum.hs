@@ -1,4 +1,4 @@
-module Sequence.Sum (sumOfIntegers, sumOfIntegersResidueClass) where
+module Sum (sumOfIntegers, sumOfIntegersResidueClass) where
 
 sumOfIntegers :: (Integral a) => a -> a
 sumOfIntegers n = n * (n + 1) `div` 2
