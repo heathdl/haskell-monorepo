@@ -1,4 +1,4 @@
-module Prime.Totients (eulersTotient, eulersTotientGivenFactorisation, carmichaelsTotient, carmichaelsTotientGivenFactorisation, carmichaelsTotientOfPrimes) where
+module Prime.Totients (eulersTotient, eulersTotientGivenFactorisation, carmichaelsTotient, carmichaelsTotientGivenFactorisation, carmichaelsTotientOfSemiprimeGivenFactors) where
 
 import Prime.Factorisation (primeFactorisation)
 
@@ -36,8 +36,8 @@ carmichaelsTotientGivenFactorisation factorisation
 carmichaelsTotient :: (Integral a) => a -> a
 carmichaelsTotient a = carmichaelsTotientGivenFactorisation (primeFactorisation a)
 
-carmichaelsTotientOfPrimes :: (Integral a) => a -> a -> a
-carmichaelsTotientOfPrimes p q = (a `div` g) * b
+carmichaelsTotientOfSemiprimeGivenFactors :: (Integral a) => a -> a -> a
+carmichaelsTotientOfSemiprimeGivenFactors p q = (a `div` g) * b
   where
     a = p - 1
     b = q - 1

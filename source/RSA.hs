@@ -2,7 +2,7 @@ module RSA where
 
 import Data.Char (chr, ord)
 import Prime.Tests.MillerRabin (millerRabinNextPrimeHigherThan)
-import Prime.Totients (carmichaelsTotientOfPrimes)
+import Prime.Totients (carmichaelsTotientOfSemiprimeGivenFactors)
 import RaiseToPowerModulo (raiseToSomePowerModulo)
 import System.Random (Random (randomR), RandomGen, StdGen, mkStdGen, split)
 
@@ -33,7 +33,7 @@ generateRSAParameters rounds range gen = ((n, e, d'), gen')
   where
     (primePair, gen') = generatePrimePair rounds range gen
     n = uncurry (*) primePair
-    λn = uncurry carmichaelsTotientOfPrimes primePair
+    λn = uncurry carmichaelsTotientOfSemiprimeGivenFactors primePair
     e = 2 ^ 16 + 1
 
     (_, d, _) = extendedEuclid e λn
@@ -53,6 +53,8 @@ main = do
 
   putStrLn ("Encrypted String: " ++ show c2)
   putStrLn ("Decrypted String: " ++ show m2')
+
+  print rsaState
   where
     (rsaState, _) = generateRSAParameters 5 range generator
 
@@ -64,6 +66,6 @@ main = do
     c2 = rsaEncryptString rsaState m2
     m2' = rsaDecryptString rsaState c2
 
-    exponent = 2 ^ 5
+    exponent = 1024
     range = (2 ^ exponent, 2 ^ exponent * 2 - 1) :: (Integer, Integer)
     generator = mkStdGen 1
