@@ -1,14 +1,15 @@
 module Prime.Totients (eulersTotient, eulersTotientGivenFactorisation, carmichaelsTotient, carmichaelsTotientGivenFactorisation, carmichaelsTotientOfSemiprimeGivenFactors) where
 
+import Multiset (Multiset)
 import Prime.Factorisation (primeFactorisation)
 
-eulersTotientGivenFactorisation :: (Integral a) => [(a, Int)] -> a
+eulersTotientGivenFactorisation :: (Integral a) => Multiset a -> a
 eulersTotientGivenFactorisation factorisation = product (map (\(factor, count) -> (factor - 1) * factor ^ (count - 1)) factorisation)
 
 eulersTotient :: (Integral a) => a -> a
 eulersTotient = eulersTotientGivenFactorisation . primeFactorisation
 
-carmichaelsTotientGivenFactorisation :: (Integral a) => [(a, Int)] -> a
+carmichaelsTotientGivenFactorisation :: (Integral a) => Multiset a -> a
 carmichaelsTotientGivenFactorisation factorisation
   | null factorisation || factorisation == [(2, 1)] || factorisation == [(2, 2)] = totient
   | isPowerOfTwo = totient `div` 2

@@ -41,7 +41,7 @@ computeCanonicalPartitions xs = concatMap (go Nothing xs) partitionSizes
   where
     PartitionForest partitionSizes = integerPartitionTree (cardinalityOfMultiset xs)
 
-    go :: (Ord a) => Maybe (Int, [(a, Int)]) -> Multiset a -> PartitionTree Int -> [[Multiset a]]
+    go :: (Ord a) => Maybe (Int, Multiset a) -> Multiset a -> PartitionTree Int -> [[Multiset a]]
     go m' ms (PartitionNode p children) =
       concatMap choose (filter (isCanonicalSubset m' . fst) (subsetsOfSize p ms))
       where

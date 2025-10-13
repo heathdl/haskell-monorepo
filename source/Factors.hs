@@ -5,7 +5,7 @@ import Prime.Factorisation (primeFactorisation)
 import Prime.Factorisation.Pairwise (primeFactorPairs)
 import Sort.MergeSort (mergeAll)
 
-primeFactorisationSubsets :: (Integral a) => [(a, Int)] -> [[a]]
+primeFactorisationSubsets :: (Integral a) => Multiset a -> [[a]]
 primeFactorisationSubsets [] = [[]]
 primeFactorisationSubsets ((p, c) : xs) = mergeAll compareFactorisations (map prefixes subsequent)
   where
@@ -13,7 +13,7 @@ primeFactorisationSubsets ((p, c) : xs) = mergeAll compareFactorisations (map pr
     compareFactorisations a b = product a < product b
     prefixes s = [replicate a p ++ s | a <- [0 .. c]]
 
-countFactors :: (Integral a) => [(a, Int)] -> Int
+countFactors :: (Integral a) => Multiset a -> Int
 countFactors [] = 1
 countFactors ((_, count) : xs) = (count + 1) * countFactors xs
 
@@ -23,7 +23,7 @@ factorisationOfFactors x = primeFactorisationSubsets (primeFactorisation x)
 calculateFactors :: (Integral a) => a -> [a]
 calculateFactors x = map product (factorisationOfFactors x)
 
-nonPrimeFactorisationsFromFactorisation :: (Integral a) => [(a, Int)] -> [Multiset a]
+nonPrimeFactorisationsFromFactorisation :: (Integral a) => Multiset a -> [Multiset a]
 nonPrimeFactorisationsFromFactorisation factorisation = map Multiset.fromSortedList products
   where
     products = map (map (multiSetDoubleMap (^) product)) partitions

@@ -1,9 +1,10 @@
 module Prime.Coprimes (areFactorisationsCoprime, areCoprime, calculateCoprimes, compositeCoprimes) where
 
+import Multiset (Multiset)
 import Prime.Factorisation (primeFactorisation)
 import Prime.Factorisation.Pairwise (primeFactorPairs)
 
-areFactorisationsCoprime :: (Integral a) => [(a, Int)] -> [(a, Int)] -> Bool
+areFactorisationsCoprime :: (Integral a) => Multiset a -> Multiset a -> Bool
 areFactorisationsCoprime [] _ = True
 areFactorisationsCoprime _ [] = True
 areFactorisationsCoprime a@((ah, _) : as) b@((bh, _) : bs)

@@ -1,8 +1,9 @@
 module Prime.Factorisation (primeFactorisation, primeFactorMultiset, primeDivisors) where
 
+import Multiset (Multiset)
 import Prime (primes)
 
-primeFactorisation :: (Integral a, Ord a) => a -> [(a, Int)]
+primeFactorisation :: (Integral a, Ord a) => a -> Multiset a
 primeFactorisation value
   | value < 2 = []
   | value < 3 = [(value, 1)]

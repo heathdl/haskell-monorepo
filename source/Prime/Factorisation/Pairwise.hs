@@ -3,6 +3,7 @@ module Prime.Factorisation.Pairwise (primeFactorMultisetPairs, primeFactorPairs)
 import Data.List (foldl')
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
+import Multiset (Multiset)
 
 createPrimeList :: (Integral a) => (Map a [b] -> a -> Maybe [a] -> [b]) -> [(a, [b])]
 createPrimeList formatFactors = (1, []) : go 2 Map.empty (Map.singleton 1 [])
@@ -31,7 +32,7 @@ createPrimeList formatFactors = (1, []) : go 2 Map.empty (Map.singleton 1 [])
             (Map.delete n compositeMap)
             ps
 
-primeFactorPairs :: (Integral a) => [(a, [(a, Int)])]
+primeFactorPairs :: (Integral a) => [(a, Multiset a)]
 primeFactorPairs = createPrimeList formatFactors
   where
     formatFactors factorMap n Nothing = [(n, 1)]
