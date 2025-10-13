@@ -18,21 +18,20 @@ isHappy x = go x (IntSet.singleton x)
 happyNumbers :: [Int]
 -- https://oeis.org/A031177
 unhappyNumbers :: [Int]
-(happyNumbers, unhappyNumbers) = go IntSet.empty IntSet.empty [1 ..]
+(happyNumbers, unhappyNumbers) = go (IntSet.singleton 1) [2 ..]
   where
-    go happySet unhappySet (x : xs) =
+    go happySet (x : xs) =
       case inner x IntSet.empty of
         (True, visited) -> (x : hs, us)
           where
-            (hs, us) = go (IntSet.union happySet visited) unhappySet xs
+            (hs, us) = go (IntSet.union happySet visited) xs
         (False, visited) -> (hs, x : us)
           where
-            (hs, us) = go happySet (IntSet.union unhappySet visited) xs
+            (hs, us) = go happySet xs
       where
-        inner 1 visited = (True, IntSet.insert 1 visited)
         inner n visited
           | IntSet.member n happySet = (True, visited)
-          | IntSet.member n unhappySet = (False, visited)
+          | n < x = (False, visited)
           | IntSet.member n visited = (False, visited)
           | otherwise = inner n' (IntSet.insert n visited)
           where
@@ -71,5 +70,5 @@ sumDigitsSquared n = r * r + sumDigitsSquared q
 
 main :: IO ()
 main = do
-  mapM_ (\(a, b) -> putStrLn (show a ++ " " ++ show b)) (zip [1 ..] (takeWhile (<= 1000) happyNumbers))
+  mapM_ (\(a, b) -> putStrLn (show a ++ " " ++ show b)) (zip [1 ..] happyNumbers)
   print (take 20 happyNumberTerminals)
