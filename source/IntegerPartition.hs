@@ -1,4 +1,4 @@
-module IntegerPartition (integerPartition, integerPartitionTree) where
+module IntegerPartition (integerPartition, integerPartitionTree, subsetSumTree) where
 
 -- All sets $S$ such that $\sum_{i=0}{n}S_{i} = n$
 -- https://en.wikipedia.org/wiki/Integer_partition
@@ -26,10 +26,26 @@ integerPartitionTree n
       | m == 0 = []
       | otherwise =
           [ PartitionNode p children
-          | p <- [low .. m],
-            let children = build (m - p) p,
-            not (null children) || m - p == 0
+            | p <- [low .. m],
+              let children = build (m - p) p,
+              not (null children) || m - p == 0
           ]
 
+subsetSumTree :: (Integral a, Ord a) => [a] -> a -> PartitionForest a
+subsetSumTree xs n
+  | n <= 0 = PartitionForest []
+  | otherwise = PartitionForest (build n xs)
+  where
+    build m ys
+      | m == 0 = []
+      | otherwise =
+          let available = dropWhile (> m) ys
+           in [ PartitionNode p children
+                | p <- available,
+                  let rest = dropWhile (> p) available,
+                  let children = build (m - p) rest,
+                  not (null children) || m - p == 0
+              ]
+
 main :: IO ()
-main = print (integerPartitionTree 10)
+main = print (subsetSumTree (map (^ 2) [9, 8 .. 1]) 10)
