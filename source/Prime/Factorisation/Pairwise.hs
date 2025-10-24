@@ -23,7 +23,7 @@ createPrimeList formatFactors = (1, []) : go 2 Map.empty (Map.singleton 1 [])
         factors = formatFactors factorMap p Nothing
         compositeMap' = Map.insertWith (++) (p * p) [p] compositeMap
 
-    handleComposite compositeMap factorMap n ps@(p : _) = (factors, compositeMap')
+    handleComposite compositeMap factorMap n ps = (factors, compositeMap')
       where
         factors = formatFactors factorMap n (Just ps)
         compositeMap' =
