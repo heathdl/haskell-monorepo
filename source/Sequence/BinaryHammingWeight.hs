@@ -4,6 +4,7 @@ import BinaryDisplay (showAutoJustifiedBinaryList, showBinaryList, showJustified
 import BinaryDisplay.DisplayTypes (monochrome)
 import Data.Bits (Bits (shiftR, xor, (.&.), (.|.)))
 import Data.Maybe qualified
+import Merge (mergeInfiniteMonotonic)
 
 iterativeHakmem1750 :: Int -> [Word]
 iterativeHakmem1750 n = iterate next (2 ^ n - 1)
@@ -30,31 +31,17 @@ chooseNOfK n k
   | otherwise = []
 
 binaryHammingWeightWithResidue :: (Integral a) => Int -> Int -> [a]
-binaryHammingWeightWithResidue m n = prefix ++ go [binaryHammingWeightOf start] rest (2 ^ start - 1)
+binaryHammingWeightWithResidue m n = prefix ++ mergeInfiniteMonotonic rest
   where
     (start, prefix)
       | n == 0 = (m, [0])
       | otherwise = (n, [])
-    rest = [binaryHammingWeightOf (start + m * k) | k <- [1 ..]]
-
-    go workingLists untappedLists threshold =
-      case extractMinima threshold workingLists of
-        (Nothing, _) -> go (head untappedLists : workingLists) (tail untappedLists) threshold'
-        (Just minima, remainingLists) -> minima : go remainingLists untappedLists threshold
-      where
-        threshold' = threshold * (2 ^ m) + (2 ^ m - 1)
-
-    extractMinima _ [] = (Nothing, [])
-    extractMinima threshold lists
-      | minima >= threshold = (Nothing, lists)
-      | otherwise = (Just minima, subsequent)
-      where
-        heads = map head lists
-        minima = minimum heads
-        subsequent = zipWith (\xs h -> if h == minima then tail xs else xs) lists heads
+    rest = [binaryHammingWeightOf (start + m * k) | k <- [0 ..]]
 
 main :: IO ()
 main = do
-  putStrLn (showBinaryList monochrome bitmaps)
+  print (take 64 (binaryHammingWeightWithResidue 2 0))
   where
+    -- putStrLn (showBinaryList monochrome bitmaps)
+
     bitmaps = binaryHammingWeightWithResidue 2 1
