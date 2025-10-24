@@ -1,4 +1,4 @@
-module Multiset (Multiset, fromSortedList, subsetsOfSize, cardinalityOfMultiset, canonicalisePartitions, computePartitions, computeCanonicalPartitions, multiSetDoubleMap, formatMultiSet) where
+module Multiset (Multiset, fromSortedList, subsetsOfSize, cardinalityOfMultiset, canonicalisePartitions, orderedPermutations, computePartitions, removeCount, removeAll, insertCount, computeCanonicalPartitions, multiSetDoubleMap, formatMultiset) where
 
 import Data.List (intercalate, sort)
 import Data.Set qualified as Set
@@ -29,6 +29,31 @@ subsetsOfSize n ((x, c) : xs) =
         subsetPrefix = [(x, k) | k /= 0]
         leftoverPrefix = [(x, c - k) | (c - k) /= 0]
         insertInto (s, l) = (subsetPrefix ++ s, leftoverPrefix ++ l)
+
+removeCount :: (Eq a) => a -> Int -> Multiset a -> Multiset a
+removeCount _ _ [] = []
+removeCount y count (h@(x, c) : xs)
+  | x == y && c > count = (x, c - count) : xs
+  | x == y && c == count = xs
+  | otherwise = h : removeCount y count xs
+
+removeAll :: (Eq a) => a -> Multiset a -> Multiset a
+removeAll _ [] = []
+removeAll y (h@(x, c) : xs)
+  | x == y = xs
+  | otherwise = h : removeAll y xs
+
+insertCount :: (Ord a) => a -> Int -> Multiset a -> Multiset a
+insertCount y 0 ms = ms
+insertCount y count [] = [(y, count)]
+insertCount y count (h@(x, c) : xs)
+  | x == y = (x, c + count) : xs
+  | x > y = (y, count) : h : xs
+  | otherwise = h : insertCount y count xs
+
+orderedPermutations :: (Ord a) => Multiset a -> [[a]]
+orderedPermutations [] = [[]]
+orderedPermutations ms = concatMap (\(x, c) -> map (x :) (orderedPermutations (removeCount x 1 ms))) ms
 
 cardinalityOfMultiset :: Multiset a -> Int
 cardinalityOfMultiset = foldr ((+) . snd) 0
@@ -73,8 +98,8 @@ computePartitions xs = concatMap (go xs) partitionSizes
 multiSetDoubleMap :: (Integral a) => (a -> Int -> a) -> ([a] -> c) -> Multiset a -> c
 multiSetDoubleMap f g = g . map (uncurry f)
 
-formatMultiSet :: (Show a) => Multiset a -> String
-formatMultiSet xs =
+formatMultiset :: (Show a) => Multiset a -> String
+formatMultiset xs =
   case parts of
     [] -> "1"
     _ -> intercalate " * " parts
@@ -85,7 +110,7 @@ formatMultiSet xs =
 
 main :: IO ()
 main = do
-  -- mapM_ (putStrLn . intercalate " | " . map formatMultiSet) (computePartitions d)
+  -- mapM_ (putStrLn . intercalate " | " . map formatMultiset) (computePartitions d)
   mapM_ (print . map (product . map (uncurry (^)))) (canonicalisePartitions (computePartitions d))
   where
     d = [(2, 1), (3, 2), (5, 3)] :: Multiset Integer
