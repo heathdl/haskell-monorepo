@@ -1,10 +1,7 @@
 module Sequence.BinaryHammingWeight where
 
-import BinaryDisplay (showAutoJustifiedBinaryList, showBinaryList, showJustifiedBinaryList)
-import BinaryDisplay.DisplayTypes (monochrome)
 import Data.Bits (Bits (shiftR, xor, (.&.), (.|.)))
-import Data.Maybe qualified
-import Merge (mergeInfiniteMonotonic)
+import Merge (mergeStrictlyIncreasing)
 
 iterativeHakmem1750 :: Int -> [Word]
 iterativeHakmem1750 n = iterate next (2 ^ n - 1)
@@ -31,7 +28,7 @@ chooseNOfK n k
   | otherwise = []
 
 binaryHammingWeightWithResidue :: (Integral a) => Int -> Int -> [a]
-binaryHammingWeightWithResidue m n = prefix ++ mergeInfiniteMonotonic rest
+binaryHammingWeightWithResidue m n = prefix ++ mergeStrictlyIncreasing rest
   where
     (start, prefix)
       | n == 0 = (m, [0])
@@ -41,7 +38,3 @@ binaryHammingWeightWithResidue m n = prefix ++ mergeInfiniteMonotonic rest
 main :: IO ()
 main = do
   print (take 64 (binaryHammingWeightWithResidue 2 0))
-  where
-    -- putStrLn (showBinaryList monochrome bitmaps)
-
-    bitmaps = binaryHammingWeightWithResidue 2 1
