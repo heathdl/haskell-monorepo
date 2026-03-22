@@ -214,9 +214,6 @@ main =
       ("Fermat numbers", a000051_list),
       ("Fermat primes", a019434_list),
       ("Gray codes", a003188_list),
-      -- These use `Int`s, so they break the other sequences.
-      -- ("Happy Numbers", a007770_list),
-      -- ("Unhappy Numbers", a031177_list),
       ("Mersenne numbers", a001348_list),
       ("Mersenne primes", a000668_list),
       ("2-adic valuation of n", a007814_list),
@@ -246,6 +243,9 @@ main =
       ("Freestyle perfect numbers", a058007_list),
       ("Mersenne exponents", a000043_list),
       ("Highly palindromic numbers", a107129_list)
+      -- These use `Int`s, so they break the other sequences.
+      -- ("Happy Numbers", a007770_list),
+      -- ("Unhappy Numbers", a031177_list),
     ]
   where
     showPair :: (Show a) => (String, [a]) -> String
