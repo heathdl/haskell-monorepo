@@ -1,4 +1,4 @@
-module Sequence.PAddicValuation (valuation, withoutFactorsOf) where
+module Sequence.PAddicValuation (valuation, valuationOf, withoutFactorsOf) where
 
 import Data.List (transpose)
 
@@ -8,7 +8,7 @@ import Data.List (transpose)
 --        [1, 2] -> [0, 1, 0, 2]
 --                  [1, 2, 1, 3] -> [0, 1, 0, 2, 0, 1, 0, 3]
 
-valuation :: (Integral a) => a -> [Int]
+valuation :: (Integral a) => a -> [a]
 valuation n = sequence
   where
     sequence = zeros ++ concatMap (\x -> x + 1 : zeros) sequence
@@ -19,7 +19,7 @@ valuation n = sequence
 --              [0, 1] ++ [0, 2] = [0, 1, 0, 2]
 --                                 [0, 1, 0, 2] ++ [0, 1, 0, 3] = [0, 1, 0, 2, 0, 1, 0, 3]
 
-valuation2 :: (Integral a) => a -> [Int]
+valuation2 :: (Integral a) => a -> [a]
 valuation2 n = start ++ go start
   where
     start = replicate (fromIntegral n - 1) 0 ++ [1]
@@ -56,18 +56,19 @@ valuation3 n = interlace (map (+ 1) (go masks 1 0))
 --                       0
 --  0  1  0  2  0  1  0  3
 
-valuation4 :: (Integral a) => Int -> [a]
-valuation4 n = map calculate [1 ..]
-  where
-    calculate k
-      | k `mod` n == 0 = 1 + calculate (k `div` n)
-      | otherwise = 0
+valuation4 :: (Integral a) => a -> [a]
+valuation4 p = map (valuationOf p) [1 ..]
+
+valuationOf :: (Integral a) => a -> a -> a
+valuationOf p n
+  | n `mod` p == 0 = 1 + valuationOf p (n `div` p)
+  | otherwise = 0
 
 withoutFactorsOf :: Int -> [Int]
 withoutFactorsOf n = zipWith div [1 ..] (map (n ^) (valuation n))
 
 main :: IO ()
 main = do
-  putStrLn ("n=2 " ++ show (take (2 ^ 6) (valuation3 2)))
-  putStrLn ("n=3 " ++ show (take (3 ^ 4) (valuation3 3)))
-  putStrLn ("n=5 " ++ show (take (5 ^ 2) (valuation3 5)))
+  putStrLn ("n=2 " ++ show (take (2 ^ 6) (valuation 2)))
+  putStrLn ("n=3 " ++ show (take (3 ^ 4) (valuation 3)))
+  putStrLn ("n=5 " ++ show (take (5 ^ 2) (valuation 5)))
