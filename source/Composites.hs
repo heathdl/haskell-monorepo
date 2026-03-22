@@ -6,7 +6,7 @@ import Prime.Factorisation.Pairwise (primeFactorPairs)
 
 compositesOfResidueClassModulo :: (Integral a) => a -> a -> [a]
 compositesOfResidueClassModulo n m
-  | n < 2 = go (n + m) primes
+  | n < 2 = go 2 primes
   | otherwise = go n primes
   where
     go x p@(ph : ps)
