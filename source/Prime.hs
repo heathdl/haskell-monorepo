@@ -3,7 +3,7 @@ module Prime (primes, isPrime) where
 import Data.Bool (Bool)
 import Prime.Factorisation.Pairwise (primeFactorPairs)
 import Prime.Tests.MillerRabin (deterministicMillerRabinPrimalityTest)
-import Prime.Tests.TrailDivision (internalTrialDivision)
+import Prime.Tests.TrialDivision (internalTrialDivision)
 import System.Random (Random, mkStdGen)
 
 isPrimeTrialDivision :: (Integral a) => a -> Bool

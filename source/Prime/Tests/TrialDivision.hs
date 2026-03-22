@@ -1,4 +1,4 @@
-module Prime.Tests.TrailDivision (internalTrialDivision, naiveTrialDivision) where
+module Prime.Tests.TrialDivision (internalTrialDivision, naiveTrialDivision) where
 
 internalTrialDivision :: (Integral a) => [a] -> a -> Bool
 internalTrialDivision primes 1 = False
