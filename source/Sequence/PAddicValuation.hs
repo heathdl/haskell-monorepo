@@ -29,7 +29,7 @@ valuation2 n = start ++ go start
     incrementLast [x] = [x + 1]
     incrementLast (x : xs) = x : incrementLast xs
 
--- Create repeating "masks" for each power, then sum columnwise
+-- Create repeating "masks" for each power, then count leading 1s per column
 -- 2 : [0, 1, 0, 1, 0, 1, 0, 1, ...]
 -- 4 : [0, 0, 0, 1, 0, 0, 0, 1, ...]
 -- 8 : [0, 0, 0, 0, 0, 0, 0, 1, ...]
@@ -46,7 +46,7 @@ valuation3 n = interlace (map (+ 1) (go masks 1 0))
     go masks p k = group ++ go rest (p * n) (k + 1)
       where
         (chunk, rest) = splitAt p masks
-        group = map (sum . take k) chunk
+        group = map (fromIntegral . length . takeWhile (/= 0)) chunk
 
 -- For each number, count how many times you can divide the base out
 -- [1, 2, 3, 4, 5, 6, 7, 8]
