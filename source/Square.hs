@@ -27,6 +27,15 @@ newtonRaphsonSquareRoot value = go value
       where
         x' = 0.5 * (x + value / x)
 
+approximateNextRoot :: Double -> Double
+approximateNextRoot root = root * go bs
+  where
+    k = root * root
+    bs = map (\n -> (1.5 - n) / (n * k)) [1 .. bound]
+    bound = fromIntegral (ceiling (1024 / k))
+    go [] = 1
+    go (b : bs) = 1 + (b * go bs)
+
 -- `squareRoots !! n` is the square root of n, equivalent precision to `map newtonRaphsonSquareRoot [1..]`
 -- Uses a recurrence to predict the next square root, then applies Newton-Raphson, changing how many steps
 -- are used based on how far into the sequence we are (the predictor gets more accurate n→∞).
@@ -60,5 +69,4 @@ approximateSquareRoots = go 1 1 3
         a' = (x - 0.5) / a -- sqrt(x) ~ sqrt(x - 1) + 1 / 2sqrt(x - 1) = (2x - 1) / 2sqrt(x - 1) = (x - 0.5) / sqrt(x - 1)
 
 main :: IO ()
-main = do
-  mapM_ (\(a, b) -> putStrLn (show a ++ "," ++ show b)) (zip [1 .. 8192] (map (^ 2) squareRoots))
+main = mapM_ (\(a, b) -> putStrLn (show a ++ "," ++ show b)) (zip [1 .. 8192] (map (^ 2) squareRoots))
